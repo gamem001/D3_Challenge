@@ -145,11 +145,18 @@ function makeResponsive() {
         .attr("cx", d => xLinearScale(d[someX]))
         .attr("cy", d => yLinearScale(d.healthcare))
         .attr("r", 20)
-        .attr("fill", "pink")
-        .attr("opacity", ".75")
-        // .text(function(d) {return d.abbr})
-        // .attr("font-size", "10px");
-    
+        .attr("fill", "teal")
+        .attr("opacity", ".75");
+
+      let circleText = chartGroup.selectAll("text")
+        .data(povertyData)
+        .enter()
+        .append("text")
+        .attr("x", d => xLinearScale(d[someX]))
+        .attr("y", d => yLinearScale(d.healthcare))
+        .text(function(d) {return d.abbr})
+        .attr("font-size", "10px");
+      
       // Create group for two x-axis labels
       let labelsGroup = chartGroup.append("g")
         .attr("transform", `translate(${width / 2}, ${height + 20})`);
@@ -180,7 +187,7 @@ function makeResponsive() {
         .text("Lacking Healthcare (%)");
     
       // updateToolTip function above csv import
-      circlesGroup = updateToolTip(someX, circlesGroup);
+      circlesGroup = updateToolTip(someX, circlesGroup, circleText);
     
       // x axis labels event listener
       labelsGroup.selectAll("text")
