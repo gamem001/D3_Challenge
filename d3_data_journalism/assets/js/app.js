@@ -60,7 +60,13 @@ function makeResponsive() {
 
       return newX;
     }
-    
+     // function used for updating circles labels positions
+    function renderTextX(textLabels, newXScale, someX) {
+      textLabels.transition()
+        .duration(1500)
+        .attr('x', d => newXScale(d[someX]));
+      return textLabels;
+  }
     // function used for updating circles group with a transition to new circles
     //create a new x scale and new y scale add to below (add a default parameter) chosenY = None next to chosen x 
     function renderCircles(circlesGroup, newXScale, someX) {
@@ -72,7 +78,7 @@ function makeResponsive() {
     }
     
     // function used for updating circles group with new tooltip
-    function updateToolTip(someX, circlesGroup) {
+    function updateToolTip(someX, circlesGroup, textLabels) {
 
       let label;
     
@@ -155,6 +161,8 @@ function makeResponsive() {
         .enter()
         .append("text")
         .classed('circles-text', true)
+
+      let textLabels = circleText 
         .attr("x", d => xLinearScale(d[someX]))
         .attr("y", d => yLinearScale(d.healthcare))
         .text(function(d) {return d.abbr})
@@ -164,11 +172,11 @@ function makeResponsive() {
         .attr('text-anchor', 'middle');
       
       // Create group for two x-axis labels
-      let labelsGroup = chartGroup.append("g")
+      let xlabelsGroup = chartGroup.append("g")
         .attr("transform", `translate(${width / 2}, ${height + 20})`);
       
       // one label on x axis
-      let povertyLabel = labelsGroup.append("text")
+      let povertyLabel = xlabelsGroup.append("text")
         .attr("x", 0)
         .attr("y", 20)
         .attr("value", "poverty") // value to grab for event listener
@@ -176,7 +184,7 @@ function makeResponsive() {
         .text("Poverty Level (%)");
       
       //another label on x axis
-      let ageLabel = labelsGroup.append("text")
+      let ageLabel = xlabelsGroup.append("text")
         .attr("x", 0)
         .attr("y", 40)
         .attr("value", "age") // value to grab for event listener
@@ -193,10 +201,10 @@ function makeResponsive() {
         .text("Lacking Healthcare (%)");
     
       // updateToolTip function above csv import
-      circlesGroup = updateToolTip(someX, circlesGroup);
+      circlesGroup = updateToolTip(someX, circlesGroup, circleText, textLabels);
     
       // x axis labels event listener
-      labelsGroup.selectAll("text")
+      xlabelsGroup.selectAll("text")
         .on("click", function() {
           // get value of selection
           //we are grabbing value out of the above items based on whatever was clicked on
@@ -219,7 +227,9 @@ function makeResponsive() {
             circlesGroup = renderCircles(circlesGroup, xLinearScale, someX);
     
             // updates tooltips with new info
-            circlesGroup = updateToolTip(someX, circlesGroup);
+            circlesGroup = updateToolTip(someX, circlesGroup, textLabels);
+
+            textLabels = renderTextX(textLabels, xLinearScale, someX);
     
             // changes classes to change bold text
             if (someX === "poverty") {
