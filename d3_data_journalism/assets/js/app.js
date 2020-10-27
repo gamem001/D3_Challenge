@@ -2,10 +2,12 @@ function makeResponsive() {
 
   let svgArea = d3.select("#scatter").select("svg");
 
+  //remove elements that are in svgArea
   if (!svgArea.empty()) {
     svgArea.remove();
   }
 
+  //setting svgArea
   let svgWidth = 950;
   let svgHeight = 700;
 
@@ -18,7 +20,6 @@ function makeResponsive() {
   };
 
   //chart area
-
   let width = svgWidth - margin.left - margin.right;
   let height = svgHeight - margin.top - margin.bottom;
 
@@ -51,17 +52,16 @@ function makeResponsive() {
     }
     // update newX on click
     function renderAxes(newXScale, newX) {
-      let newBottom = d3.axisBottom(newXScale);
+      let bottomAxis = d3.axisBottom(newXScale);
      
       newX.transition()
         .duration(1000)
-        .call(newBottom);
+        .call(bottomAxis);
 
       return newX;
     }
     
-    // function used for updating circles group with a transition to
-    // new circles
+    // function used for updating circles group with a transition to new circles
     //create a new x scale and new y scale add to below (add a default parameter) chosenY = None next to chosen x 
     function renderCircles(circlesGroup, newXScale, someX) {
       circlesGroup.transition()
@@ -73,6 +73,7 @@ function makeResponsive() {
     
     // function used for updating circles group with new tooltip
     function updateToolTip(someX, circlesGroup) {
+
       let label;
     
       if (someX === "poverty") {
@@ -86,18 +87,18 @@ function makeResponsive() {
         .attr("class", "tooltip")
         .offset([50, -30])
         .html(function(d) {
-          return (`<strong>${d.abbr}<strong>`);
+          return (`<strong>${d.state}<strong>`);
         });
         // <hr>${label} ${d[someX]}
     
       circlesGroup.call(toolTip);
         // do i need 'this'
       circlesGroup.on("mouseover", function(data) {
-        toolTip.show(data, this);
+        toolTip.show(data);
       })
         // onmouseout event
         .on("mouseout", function(data) {
-          toolTip.hide(data, this);
+          toolTip.hide(data);
         });
     
       return circlesGroup;
@@ -124,14 +125,14 @@ function makeResponsive() {
         .range([height, 0]);
     
       // Create initial axis functions
-      let newBottom = d3.axisBottom(xLinearScale);
+      let bottomAxis = d3.axisBottom(xLinearScale);
       let leftAxis = d3.axisLeft(yLinearScale);
     
       // append x axis
       let newX = chartGroup.append("g")
         .classed("x-axis", true)
         .attr("transform", `translate(0, ${height})`)
-        .call(newBottom);
+        .call(bottomAxis);
     
       // append y axis
       chartGroup.append("g")
@@ -142,20 +143,25 @@ function makeResponsive() {
         .data(povertyData)
         .enter()
         .append("circle")
+        .classed('circles', true)
         .attr("cx", d => xLinearScale(d[someX]))
         .attr("cy", d => yLinearScale(d.healthcare))
         .attr("r", 20)
         .attr("fill", "teal")
         .attr("opacity", ".75");
 
-      let circleText = chartGroup.selectAll("text")
+      let circleText = chartGroup.selectAll(null)
         .data(povertyData)
         .enter()
         .append("text")
+        .classed('circles-text', true)
         .attr("x", d => xLinearScale(d[someX]))
         .attr("y", d => yLinearScale(d.healthcare))
         .text(function(d) {return d.abbr})
-        .attr("font-size", "10px");
+        .attr("font-size", "12px")
+        .attr("font-family", "sans-serif")
+        .attr("fill", "black")
+        .attr('text-anchor', 'middle');
       
       // Create group for two x-axis labels
       let labelsGroup = chartGroup.append("g")
@@ -187,7 +193,7 @@ function makeResponsive() {
         .text("Lacking Healthcare (%)");
     
       // updateToolTip function above csv import
-      circlesGroup = updateToolTip(someX, circlesGroup, circleText);
+      circlesGroup = updateToolTip(someX, circlesGroup);
     
       // x axis labels event listener
       labelsGroup.selectAll("text")
