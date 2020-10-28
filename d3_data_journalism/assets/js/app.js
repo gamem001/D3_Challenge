@@ -13,10 +13,10 @@ function makeResponsive() {
 
   // Setting the margins that will be used to get a chart area
   let margin = {
-    top: 80,
-    right: 80,
+    top: 50,
+    right: 20,
     bottom: 80,
-    left: 80
+    left: 70
   };
 
   //chart area
@@ -63,7 +63,7 @@ function makeResponsive() {
      // function used for updating circles labels positions
     function renderTextX(textLabels, newXScale, someX) {
       textLabels.transition()
-        .duration(1500)
+        .duration(1000)
         .attr('x', d => newXScale(d[someX]));
       return textLabels;
   }
@@ -78,7 +78,7 @@ function makeResponsive() {
     }
     
     // function used for updating circles group with new tooltip
-    function updateToolTip(someX, circlesGroup, textLabels) {
+    function updateToolTip(someX, circlesGroup) {
 
       let label;
     
@@ -91,16 +91,19 @@ function makeResponsive() {
     
       let toolTip = d3.tip()
         .attr("class", "tooltip")
-        .offset([50, -30])
+        .offset([20, -60])
         .html(function(d) {
-          return (`<strong>${d.state}<strong>`);
+          return (`<h5><strong>${d.state}<strong><h5><hr><h6>${label} ${d[someX]}<h6>`);
         });
         // <hr>${label} ${d[someX]}
     
       circlesGroup.call(toolTip);
         // do i need 'this'
       circlesGroup.on("mouseover", function(data) {
-        toolTip.show(data);
+        toolTip.show(data)
+          .style("display", "block")
+          .style("left", d3.event.pageX + 'px')
+          .style("top", d3.event.pageY + "px");
       })
         // onmouseout event
         .on("mouseout", function(data) {
@@ -154,7 +157,8 @@ function makeResponsive() {
         .attr("cy", d => yLinearScale(d.healthcare))
         .attr("r", 20)
         .attr("fill", "teal")
-        .attr("opacity", ".75");
+        .attr("opacity", ".65")
+        .attr("stroke", "black")
 
       let circleText = chartGroup.selectAll(null)
         .data(povertyData)
@@ -169,6 +173,7 @@ function makeResponsive() {
         .attr("font-size", "12px")
         .attr("font-family", "sans-serif")
         .attr("fill", "black")
+        .attr("font-weight", "bold")
         .attr('text-anchor', 'middle');
       
       // Create group for two x-axis labels
