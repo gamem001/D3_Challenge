@@ -41,7 +41,7 @@ function makeResponsive() {
 
   // update x scale when clicking the  X axis label
   function xScale(povertyData, someX) {
-      console.log(someX)
+      // console.log(someX)
       let xLinearScale = d3.scaleLinear()
         .domain([d3.min(povertyData, d => d[someX]) * .9, d3.max(povertyData, d => d[someX]) * 1.1])
         .range([0, width]);
@@ -57,7 +57,7 @@ function makeResponsive() {
   }
     // update xAxis on click
   function renderAxesX(xAxisScale, xAxis) {
-      console.log(xAxis)
+      // console.log(xAxis)
       let bottomAxis = d3.axisBottom(xAxisScale);
       xAxis.transition()
         .duration(1000)
@@ -318,7 +318,7 @@ function makeResponsive() {
           // updates y axis with transition
           yAxis = renderAxesY(yLinearScale, yAxis);
   
-          // updates circles with new x values
+          // updates circles with new y values
           circlesGroup = renderCirclesY(circlesGroup, yLinearScale, someY);
 
           textLabels = renderTextY(textLabels, yLinearScale, someY);
