@@ -110,26 +110,26 @@ function makeResponsive() {
   // function used for updating x circles group with new tooltip
   function updateToolTip(someX, someY, circlesGroup) {
 
-    let label;
+    // let label;
     
       if (someX === "poverty") {
-          label = "Poverty Percent:";
+          labelX = "Poverty (%): ";
       }
       else {
-          label = "Median Age:";
+          labelX = "Median Age: ";
       }
       if (someY === 'healthcare') {
-          label = "Lacking Healthcare (%)"
+          labelY = "Lacking Healthcare (%): "
       }
       else {
-          label = "Smokes (%)"
+          labelY = "Smokes (%): "
       }
 
     let toolTip = d3.tip()
         .attr("class", "tooltip")
         .offset([20, -60])
         .html(function(d) {
-        return (`<h5><strong>${d.state}<strong><h5><hr><h6>${label} ${d[someX]}<h6>`);
+        return (`<h5><strong>${d.state}<strong><h5><hr><h6>${labelX}${d[someX]}<h6>${labelY} ${d[someY]}<h6>`);
         });
         // <hr>${label} ${d[someX]}
       
